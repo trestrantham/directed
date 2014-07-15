@@ -21,4 +21,21 @@ defmodule Directed.Group.Server do
         {:ok, %Server{role: :leader}}
     end
   end
+
+  def handle_call({:create, group}, _from, state) do
+    if exists?(group) do
+      {:reply, :ok, state}
+    else
+      :ok = :pg2.create(group)
+      {:reply, :ok, state}
+    end
+  end
+
+  defp exists?(group) do
+    case :pg2.get_closest_pid(group) do
+      pid when is_pid(pid)          -> true
+      {:error, {:no_process, _}}    -> true
+      {:error, {:no_such_group, _}} -> false
+    end
+  end
 end
