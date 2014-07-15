@@ -12,4 +12,11 @@ defmodule Directed.Group.GroupTest do
     assert Group.create("group1") == :ok
     assert Group.exists?("group1")
   end
+
+  test "#create with existing group returns :ok" do
+    refute Group.exists?("group2")
+    assert Group.create("group2") == :ok
+    assert Group.create("group2") == :ok
+    assert Group.exists?("group2")
+  end
 end

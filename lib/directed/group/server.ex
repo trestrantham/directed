@@ -31,6 +31,10 @@ defmodule Directed.Group.Server do
     end
   end
 
+  def handle_call({:exists?, group}, _from, state) do
+    {:reply, exists?(group), state}
+  end
+
   defp exists?(group) do
     case :pg2.get_closest_pid(group) do
       pid when is_pid(pid)          -> true

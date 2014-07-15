@@ -16,6 +16,13 @@ defmodule Directed.Group do
     :ok = call {:create, group(name)}
   end
 
+  @doc """
+  Checks if a given group is registered
+  """
+  def exists?(name) do
+    call {:exists?, group(name)}
+  end
+
   defp call(message), do: :gen_server.call(Server.leader_pid, message)
   defp group(name), do: name |> to_string
 end
