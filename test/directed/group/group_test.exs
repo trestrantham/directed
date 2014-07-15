@@ -67,4 +67,14 @@ defmodule Directed.Group.GroupTest do
     Group.broadcast_from self, "group11", :ping
     refute_received :ping
   end
+
+  test "processes automatically removed from group when killed" do
+    pid = spawn_pid
+    assert Group.create("group12") == :ok
+    assert Group.subscribe(pid, "group12")
+    assert Group.subscribers("group12") == [pid]
+    Process.exit pid, :kill
+    :timer.sleep 10 # wait until pg2 removes dead pid
+    assert Group.subscribers("group12") == []
+  end
 end
