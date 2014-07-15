@@ -44,4 +44,27 @@ defmodule Directed.Group.GroupTest do
     assert Enum.empty?(Group.subscribers("group4"))
     Process.exit pid, :kill
   end
+
+  test "#broadcast publishes message to each subscriber" do
+    assert Group.create("group9") == :ok
+    Group.subscribe(self, "group9")
+    Group.broadcast "group9", :ping
+    assert_received :ping
+  end
+
+  test "#broadcast does not publish message to other group subscribers" do
+    pids = Enum.map 0..10, fn _ -> spawn_pid end
+    assert Group.create("group10") == :ok
+    pids |> Enum.each(&Group.subscribe(&1, "group10"))
+    Group.broadcast "group10", :ping
+    refute_received :ping
+    pids |> Enum.each(&Process.exit &1, :kill)
+  end
+
+  test "#broadcast_from does not publish to publisher pid when provided" do
+    assert Group.create("group11") == :ok
+    Group.subscribe(self, "group11")
+    Group.broadcast_from self, "group11", :ping
+    refute_received :ping
+  end
 end
