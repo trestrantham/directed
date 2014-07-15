@@ -30,6 +30,47 @@ defmodule Directed.Group do
     call {:delete, group(name)}
   end
 
+  @doc """
+  Adds subscriber pid to given group
+
+  Examples
+
+  iex> Group.subscribe(self, "mygroup")
+  """
+  def subscribe(pid, name) do
+    :ok = create(group(name))
+    call {:subscribe, pid, group(name)}
+  end
+
+  @doc """
+  Removes the given subscriber from the group
+
+  Examples
+
+  iex> Group.unsubscribe(self, "mygroup")
+  """
+  def unsubscribe(pid, name) do
+    call {:unsubscribe, pid, group(name)}
+  end
+
+  @doc """
+  Returns the list of subscriber pids of the group
+
+  iex> Group.subscribers("mygroup")
+  []
+  iex> Group.subscribe(self, "mygroup")
+  :ok
+  iex> Group.subscribers("mygroup")
+  [#PID<0.41.0>]
+
+  """
+  def subscribers(name) do
+    case :pg2.get_members(group(name)) do
+      {:error, {:no_such_group, _}} -> []
+      members -> members
+    end
+  end
+
   defp call(message), do: :gen_server.call(Server.leader_pid, message)
   defp group(name), do: name |> to_string
 end
