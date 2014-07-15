@@ -19,4 +19,11 @@ defmodule Directed.Group.GroupTest do
     assert Group.create("group2") == :ok
     assert Group.exists?("group2")
   end
+
+  test "#delete removes process group" do
+    assert Group.create("group3") == :ok
+    assert Group.exists?("group3")
+    assert Group.delete("group3")
+    refute Group.exists?("group3")
+  end
 end

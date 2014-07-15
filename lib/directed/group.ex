@@ -23,6 +23,13 @@ defmodule Directed.Group do
     call {:exists?, group(name)}
   end
 
+  @doc """
+  Removes a group
+  """
+  def delete(name) do
+    call {:delete, group(name)}
+  end
+
   defp call(message), do: :gen_server.call(Server.leader_pid, message)
   defp group(name), do: name |> to_string
 end

@@ -35,6 +35,10 @@ defmodule Directed.Group.Server do
     {:reply, exists?(group), state}
   end
 
+  def handle_call({:delete, group}, _from, state) do
+    {:reply, delete(group), state}
+  end
+
   defp exists?(group) do
     case :pg2.get_closest_pid(group) do
       pid when is_pid(pid)          -> true
@@ -42,4 +46,6 @@ defmodule Directed.Group.Server do
       {:error, {:no_such_group, _}} -> false
     end
   end
+
+  defp delete(group), do: :pg2.delete(group)
 end
