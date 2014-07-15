@@ -3,6 +3,11 @@ defmodule Directed.Group.GroupTest do
   alias Directed.Group
   alias Directed.Group.Server
 
+  setup do
+    # give our tests time to clean up
+    :timer.sleep 10
+  end
+
   def spawn_pid do
     spawn fn ->
       receive do

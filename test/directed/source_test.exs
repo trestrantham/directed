@@ -11,6 +11,12 @@ defmodule Directed.SourceTest do
     end
   end
 
+  setup do
+    # give our tests time to clean up
+    Group.delete("test_group")
+    :timer.sleep 10
+  end
+
   test "#init creates a group with the given group name" do
     assert Group.exists?("test_group") == false
     assert {:ok, pid} = TestSource.init("test_group", "input_group")
