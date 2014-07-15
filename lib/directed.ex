@@ -5,6 +5,7 @@ defmodule Directed do
     import Supervisor.Spec, warn: false
 
     children = [
+      worker(Directed.Group.Supervisor, [])
     ]
 
     opts = [strategy: :one_for_one, name: Directed.Supervisor]
