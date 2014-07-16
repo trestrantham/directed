@@ -25,7 +25,7 @@ defmodule Directed.SourceTest do
     Process.exit pid, :kill
   end
 
-  test "#init subscribes the given input group" do
+  test "#init subscribes to the given input group" do
     assert Enum.empty?(Group.subscribers("input_group"))
     assert {:ok, pid} = TestSource.init("test_group", "input_group")
     assert Group.subscribers("input_group") == [pid]
