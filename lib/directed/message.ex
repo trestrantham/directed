@@ -1,14 +1,12 @@
 defmodule Directed.Message do
-  alias Directed.Group
-
-  def emit(message, group) when is_list(message) == false do
-    Group.broadcast(group, message)
+  def emit(message, event_manager) when is_list(message) == false do
+    GenEvent.notify(event_manager, message)
   end
 
-  def emit([message | tail], group) do
-    emit(message, group)
-    emit(tail, group)
+  def emit([message | tail], event_manager) do
+    emit(message, event_manager)
+    emit(tail, event_manager)
   end
 
-  def emit([], group), do: nil
+  def emit([], event_manager), do: nil
 end
