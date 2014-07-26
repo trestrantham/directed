@@ -1,55 +1,82 @@
 defmodule Directed.SourceTest do
   use ExUnit.Case
-  alias Directed.Group
-  alias Directed.Message
 
   defmodule TestSource do
     use Directed.Source
 
-    def process do
+    def perform do
       for x <- 1..3, do: x
     end
   end
 
-  setup do
-    # give our tests time to clean up
-    Group.delete("test_group")
-    :timer.sleep 10
+  defmodule EmitSource do
+    use Directed.Source, emit: :explicit
+
+    def perform(manager) do
+      for x <- 10..1 do
+        Message.emit(x, manager)
+      end
+    end
   end
 
-  test "#init creates a group with the given group name" do
-    assert Group.exists?("test_group") == false
-    assert {:ok, pid} = TestSource.init("test_group", "input_group")
-    assert Group.exists?("test_group") == true
+  defmodule TestHandler do
+    use GenEvent
 
-    Process.exit pid, :kill
+    def handle_event(event, parent) do
+      send parent, event
+      {:ok, parent}
+    end
   end
 
-  test "#init subscribes to the given input group" do
-    assert Enum.empty?(Group.subscribers("input_group"))
-    assert {:ok, pid} = TestSource.init("test_group", "input_group")
-    assert Group.subscribers("input_group") == [pid]
+  test "#process sends :done to output_manager when processing is complete" do
+    {:ok, input_manager} = GenEvent.start_link
+    {:ok, output_manager} = GenEvent.start_link
 
-    Process.exit pid, :kill
-  end
+    GenEvent.add_handler(input_manager, TestSource, output_manager, link: true)
+    GenEvent.add_handler(output_manager, TestHandler, self, link: true)
 
-  test "#process sends :done when processing is complete" do
-    assert {:ok, pid} = TestSource.init("test_group", "input_group")
-    Group.subscribe(self, "test_group")
-    Message.emit(:start, "input_group")
-    :timer.sleep 10 # let it process
+    GenEvent.sync_notify(input_manager, :start)
+
+    :timer.sleep 100
 
     assert_received :done
   end
 
-  test "#process sends output to output group when processing is complete" do
-    assert {:ok, pid} = TestSource.init("test_group", "input_group")
-    Group.subscribe(self, "test_group")
-    Message.emit(:start, "input_group")
-    :timer.sleep 10 # let it process
+  test "#process sends output to output manager" do
+    {:ok, input_manager} = GenEvent.start_link
+    {:ok, output_manager} = GenEvent.start_link
+
+    GenEvent.add_handler(input_manager, TestSource, output_manager, link: true)
+    GenEvent.add_handler(output_manager, TestHandler, self, link: true)
+
+    GenEvent.sync_notify(input_manager, :start)
+
+    :timer.sleep 100
 
     assert_received 1
     assert_received 2
     assert_received 3
+
+    GenEvent.stop(input_manager)
+    GenEvent.stop(output_manager)
+  end
+
+  test "messages can be emitted manually" do
+    {:ok, input_manager} = GenEvent.start_link
+    {:ok, output_manager} = GenEvent.start_link
+
+    GenEvent.add_handler(input_manager, EmitSource, output_manager, link: true)
+    GenEvent.add_handler(output_manager, TestHandler, self, link: true)
+
+    GenEvent.sync_notify(input_manager, :start)
+
+    :timer.sleep 100
+
+    for x <- 10..1 do
+      assert_received x
+    end
+
+    GenEvent.stop(input_manager)
+    GenEvent.stop(output_manager)
   end
 end

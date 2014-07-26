@@ -8,5 +8,5 @@ defmodule Directed.Message do
     emit(tail, event_manager)
   end
 
-  def emit([], event_manager), do: nil
+  def emit([], _event_manager), do: nil
 end
