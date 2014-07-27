@@ -4,7 +4,7 @@ defmodule Directed.SourceTest do
   defmodule TestSource do
     use Directed.Source
 
-    def perform do
+    def run do
       for x <- 1..3, do: x
     end
   end
@@ -12,7 +12,7 @@ defmodule Directed.SourceTest do
   defmodule EmitSource do
     use Directed.Source, emit: :explicit
 
-    def perform(manager) do
+    def run(manager) do
       for x <- 10..1 do
         Message.emit(x, manager)
       end
@@ -28,7 +28,7 @@ defmodule Directed.SourceTest do
     end
   end
 
-  test "#process sends :done to output_manager when processing is complete" do
+  test "#run sends :done to output_manager when processing is complete" do
     {:ok, input_manager} = GenEvent.start_link
     {:ok, output_manager} = GenEvent.start_link
 
@@ -42,7 +42,7 @@ defmodule Directed.SourceTest do
     assert_received :done
   end
 
-  test "#process sends output to output manager" do
+  test "#run sends output to output manager" do
     {:ok, input_manager} = GenEvent.start_link
     {:ok, output_manager} = GenEvent.start_link
 
@@ -61,7 +61,7 @@ defmodule Directed.SourceTest do
     GenEvent.stop(output_manager)
   end
 
-  test "messages can be emitted manually" do
+  test "#run can emit messages manually" do
     {:ok, input_manager} = GenEvent.start_link
     {:ok, output_manager} = GenEvent.start_link
 

@@ -1,6 +1,5 @@
 defmodule Directed.Source do
   use GenEvent
-  alias Directed.Message
 
   defmacro __using__(options) do
     emit = Keyword.get(options, :emit) || :implicit
@@ -17,7 +16,7 @@ defmodule Directed.Source do
       end
 
       def handle_event(:start, output_manager) do
-        start_perform(@emit, output_manager)
+        start_run(@emit, output_manager)
 
         Message.emit(:done, output_manager)
 
@@ -26,9 +25,9 @@ defmodule Directed.Source do
 
       cond do
         @emit == :implicit ->
-          defp start_perform(:implicit, output_manager), do: perform |> Message.emit(output_manager)
+          defp start_run(:implicit, output_manager), do: run |> Message.emit(output_manager)
         @emit == :explicit ->
-          defp start_perform(:explicit, output_manager), do: perform(output_manager)
+          defp start_run(:explicit, output_manager), do: run(output_manager)
       end
     end
   end
