@@ -12,11 +12,15 @@ defmodule Directed.Mixfile do
   end
 
   def application do
-    [applications: [],
-     mod: {Directed, []}]
+    [
+      applications: [],
+      mod: {Directed, []}
+    ]
   end
 
   defp deps do
-    [{:excoveralls, github: "parroty/excoveralls", only: [:dev, :test]}]
+    [
+      {:excoveralls, github: "parroty/excoveralls", only: [:dev, :test]}
+    ]
   end
 end

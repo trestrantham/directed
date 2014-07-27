@@ -1,4 +1,4 @@
 Directed
 ========
 
-Clever calculations in Elixir.
+A distributed computation framework for Elixir.
