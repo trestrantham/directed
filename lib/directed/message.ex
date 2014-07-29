@@ -5,7 +5,7 @@ defmodule Directed.Message do
   end
 
   def emit([], _event_manager), do: nil
-  
+
   def emit(message, event_manager) do
     GenEvent.notify(event_manager, message)
   end
