@@ -73,7 +73,7 @@ defmodule Directed.SourceTest do
     :timer.sleep 100
 
     for x <- 10..1 do
-      assert_received x
+      assert_received ^x
     end
 
     GenEvent.stop(input_manager)
