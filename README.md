@@ -1,5 +1,7 @@
 Directed
 ========
+[![Build Status](http://img.shields.io/travis/trestrantham/directed.svg?style=flat "Build Status")](http://travis-ci.org/trestrantham/directed)
+[![Coverage Status](http://img.shields.io/coveralls/trestrantham/directed.svg?style=flat)](https://coveralls.io/r/trestrantham/directed?branch=master)
 
 A distributed computation framework for Elixir.
 
