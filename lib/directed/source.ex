@@ -25,10 +25,6 @@ defmodule Directed.Source do
     {:ok, output_manager}
   end
 
-  def start_run(module, :implicit, output_manager) do
-    module.run |> Message.emit(output_manager)
-  end
-  def start_run(module, :explicit, output_manager) do
-    module.run(output_manager)
-  end
+  def start_run(module, :implicit, output_manager), do: module.run |> Message.emit(output_manager)
+  def start_run(module, :explicit, output_manager), do: module.run(output_manager)
 end
