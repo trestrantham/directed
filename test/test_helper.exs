@@ -16,6 +16,36 @@ defmodule Test.Handler do
   end
 end
 
+defmodule Test.Graph do
+  use Directed.Graph
+
+  source :test_source,
+    module: Test.Source
+
+  sink :test_sink,
+    module: Test.Sink,
+    input: :test_vertex
+
+  vertex :test_vertex,
+    module: Test.Vertex,
+    inputs: [:test_source, :test_source2]
+
+  vertex :test_vertex2,
+    module: Test.Vertex2,
+    inputs: [:test_vertex]
+
+  sink :test_sink2,
+    module: Test.Sink2,
+    input: :test_source2
+
+  source :test_source2,
+    module: Test.Source2
+
+  def nodes do
+    @nodes
+  end
+end
+
 defmodule Test.Source do
   use Directed.Source
 
@@ -27,8 +57,8 @@ end
 defmodule Test.Vertex do
   use Directed.Vertex
 
-  def process(message) do
-    message |> to_string |> String.upcase
+  def process(record) do
+    record |> to_string |> String.upcase
   end
 end
 
