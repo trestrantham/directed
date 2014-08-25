@@ -31,7 +31,7 @@ defmodule Test.Graph do
     inputs: [:test_source, :test_source2]
 
   vertex :test_vertex2,
-    module: Test.Vertex2,
+    module: Test.AggregateSink,
     inputs: [:test_vertex]
 
   sink :test_sink2,
@@ -39,7 +39,7 @@ defmodule Test.Graph do
     input: :test_source2
 
   source :test_source2,
-    module: Test.Source2
+    module: Test.EmitSource
 
   def nodes do
     @nodes
