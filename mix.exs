@@ -5,7 +5,7 @@ defmodule Directed.Mixfile do
     [
       app: :directed,
       version: "0.0.1",
-      elixir: "~> 0.14.3",
+      elixir: "~> 0.15.0",
       deps: deps,
       test_coverage: [tool: ExCoveralls],
       build_per_environment: true
