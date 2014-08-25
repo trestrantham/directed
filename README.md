@@ -139,11 +139,11 @@ defmodule MyApp.UsersJSON do
   use Directed.Sink, mode: :aggregate
   use Jazz
 
-  def process(record, records) do
+  def process(_params, record, records) do
     [to_string(record) | records]
   end
 
-  def finish(records) do
+  def finish(_params, records) do
     JSON.encode!(records)
   end
 end
@@ -157,7 +157,7 @@ defmodule InsertUsers do
   use Directed.Sink
   use Ecto.Model
 
-  def process(record) do
+  def process(_params, record) do
     user = %User{name: record[:name], age: record[:age]}
     Repo.insert(user)
   end
