@@ -1,3 +1,3 @@
-%{"excoveralls": {:git, "git://github.com/parroty/excoveralls.git", "5a064eed1eed2ebffb18f791ce7539ee9b77b6d8", []},
+%{"excoveralls": {:git, "git://github.com/parroty/excoveralls.git", "e3eceab0c1c9b62c4288ae7487e87e0f01e8942f", []},
   "jsex": {:package, "2.0.0"},
   "jsx": {:package, "2.0.4"}}
